@@ -13,6 +13,7 @@ import io.ktor.gson.*
 import io.ktor.features.*
 import io.ktor.client.*
 import io.ktor.client.engine.apache.*
+import io.ktor.client.request.request
 import model.Course
 
 fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
@@ -30,16 +31,20 @@ fun Application.module(testing: Boolean = false) {
 
     routing {
 
-        get("/majors") {
+        get("/major/all") {
             val result = SQL().queryList(Major::class.java)
             call.respond(result)
         }
 
-        get("/classes") {
+        get("/class/major") {
             val params = call.request.queryParameters
             val majorId = params["major_id"]
             val result = SQL().queryList(Clazz::class.java, "major_id" to majorId)
             call.respond(result)
+        }
+
+        get("/src/place/all") {
+
         }
 
         get("/student/class") {
@@ -96,12 +101,21 @@ fun Application.module(testing: Boolean = false) {
 
         get("/score/student") {
             val params = call.request.queryParameters
-            val studentId = params["student_id"]
+            val studentId = params["student_id"] ?: return@get
             val result = SQL().queryList(Score::class.java, "student_id" to studentId)
             call.respond(result)
         }
 
-        get("/score/course/open") {
+        get("/score/student/year") {
+            val params = call.request.queryParameters
+            val studentId = params["student_id"]
+            val year = params["year"]
+
+            val result = SQL().queryList(Score::class.java, "student_id" to studentId)
+            call.respond(result)
+        }
+
+        get("/score/course") {
             val params = call.request.queryParameters
             val clazzId = params["class_id"]
             val courseId = params["course_id"]
@@ -109,39 +123,71 @@ fun Application.module(testing: Boolean = false) {
             call.respond(result)
         }
 
-        get("/") {
-            call.respondText("HELLO WORLD!", contentType = ContentType.Text.Plain)
+        post("/major/add") {
+            val params = call.request.queryParameters
+            val name = params["major_name"] ?: return@post
+            Major.insert(name)
         }
 
-        get("/html-dsl") {
-            call.respondHtml {
-                head {
-                    title { +"你好" }
-                }
-                body {
-                    h1 { +"HTML" }
-                    ul {
-                        for (n in 1..10) {
-                            li { +"第${n}项" }
-                        }
-                    }
-                }
-            }
+        post("/class/add") {
+            val params = call.request.queryParameters
+            val name = params["class_name"] ?: return@post
+            val major = params["major_id"]?.toIntOrNull() ?: return@post
+            val year = params["class_tear"]?.toIntOrNull() ?: return@post
+            Clazz.insert(major, name, year)
         }
 
-        get("/styles.css") {
-            call.respondCss {
-                body {
-                    backgroundColor = Color.red
-                }
-                p {
-                    fontSize = 2.em
-                }
-                rule("p.myclass") {
-                    color = Color.blue
-                }
-            }
+        post("/teacher/add") {
+            val params = call.request.queryParameters
+            val id = params["teacher_id"] ?: return@post
+            val name = params["teacher_name"] ?: return@post
+            val sex = params["teacher_sex"]?.toIntOrNull() ?: return@post
+            val age = params["teacher_age"]?.toIntOrNull() ?: return@post
+            val phone = params["teacher_phone"] ?: return@post
+            val title = params["teacher_title"]?.toIntOrNull() ?: return@post
+
+            Teacher.insert(id, name, sex, age, phone, title)
         }
+
+        post("/student/add") {
+            val params = call.request.queryParameters
+            val id = params["student_id"] ?: return@post
+            val name = params["student_name"] ?: return@post
+            val sex = params["student_sex"]?.toIntOrNull() ?: return@post
+            val age = params["student_age"]?.toIntOrNull() ?: return@post
+            val place = params["student_place"]?.toIntOrNull() ?: return@post
+            val clazz = params["class_id"]?.toIntOrNull() ?: return@post
+            Student.insert(id, name, sex, age, place, clazz)
+        }
+
+        post("/course/open/add") {
+            val params = call.request.queryParameters
+            val course = params["course_id"] ?: return@post
+            val teacher = params["teacher_id"] ?: return@post
+            val clazz = params["class_id"]?.toIntOrNull() ?: return@post
+            val semester = params["semester_id"]?.toIntOrNull() ?: return@post
+
+            CourseOpen.insert(course, teacher, clazz, semester)
+        }
+
+        post("/score/add") {
+            val params = call.request.queryParameters
+            val course = params["course_id"] ?: return@post
+            val student = params["student_id"] ?: return@post
+            val score = params["score"]?.toIntOrNull() ?: return@post
+            Score.insert(course, student, score)
+        }
+
+        post("/course/add") {
+            val params = call.request.queryParameters
+            val id = params["course_id"] ?: return@post
+            val name = params["course_name"] ?: return@post
+            val credit = params["credit"]?.toFloatOrNull() ?: return@post
+            val hour = params["credit_hour"]?.toIntOrNull() ?: return@post
+            val type = params["course_type"]?.toIntOrNull() ?: return@post
+            Course.insert(id, name, credit, hour, type)
+        }
+
     }
 }
 
