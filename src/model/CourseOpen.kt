@@ -3,7 +3,6 @@ package com.zjut.mis14.model
 import com.zjut.mis14.conn.DatabaseProvider
 import com.zjut.mis14.sql.Field
 import com.zjut.mis14.sql.Model
-import com.zjut.mis14.sql.SQL
 import java.sql.SQLException
 
 @Model("view_course_open")

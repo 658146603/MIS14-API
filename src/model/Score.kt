@@ -3,6 +3,7 @@ package com.zjut.mis14.model
 import com.zjut.mis14.conn.DatabaseProvider
 import com.zjut.mis14.sql.Field
 import com.zjut.mis14.sql.Model
+import com.zjut.mis14.sql.SQL
 import java.sql.SQLException
 import kotlin.math.exp
 
@@ -37,8 +38,13 @@ data class Score(
             }
         }
 
-        fun selectByYear(studentId: String, year: Int) {
-
+        fun selectByYear(studentId: String?, year: Int?): HashSet<Score> {
+            val courseOpenInYear = SQL().queryList(CourseOpen::class.java, "semester_year" to year)
+            val scores = HashSet<Score>()
+            courseOpenInYear.forEach {
+                scores.addAll(SQL().queryList(Score::class.java, "student_id" to studentId, "course_id" to it.courseId))
+            }
+            return scores
         }
     }
 }

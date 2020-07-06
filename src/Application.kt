@@ -109,9 +109,8 @@ fun Application.module(testing: Boolean = false) {
         get("/score/student/year") {
             val params = call.request.queryParameters
             val studentId = params["student_id"]
-            val year = params["year"]
-
-            val result = SQL().queryList(Score::class.java, "student_id" to studentId)
+            val year = params["year"]?.toIntOrNull()
+            val result = Score.selectByYear(studentId, year)
             call.respond(result)
         }
 
