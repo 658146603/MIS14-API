@@ -57,5 +57,5 @@ dependencies {
 
     // https://mvnrepository.com/artifact/com.microsoft.sqlserver/mssql-jdbc
     compile group: 'com.microsoft.sqlserver', name: 'mssql-jdbc', version: '8.2.2.jre8'
-
+    implementation "io.ktor:ktor-freemarker:$ktor_version"
 }

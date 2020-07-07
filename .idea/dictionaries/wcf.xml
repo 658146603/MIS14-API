@@ -2,7 +2,9 @@
   <dictionary name="wcf">
     <words>
       <w>gson</w>
+      <w>hoverable</w>
       <w>ktor</w>
+      <w>mdui</w>
       <w>myclass</w>
       <w>sqlserver</w>
       <w>wangcf</w>

@@ -8,7 +8,7 @@ import java.sql.SQLException
 @Model("view_major")
 data class Major(
     @Field("major_id") val majorId: Int,
-    @Field("major_name") val MajorName: String
+    @Field("major_name") val majorName: String
 ) {
     constructor() : this(0, "")
 

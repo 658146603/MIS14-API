@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0,maximum-scale=1.0, user-scalable=no"/>
+    <meta name="theme-color" content="#3f51b5">
+    <title>高校成绩管理系统</title>
+    <link rel="stylesheet" type="text/css" href="./css/mdui.min.css">
+    <link rel="stylesheet" type="text/css" href="./css/style.css">
+    <script src="./js/mdui.min.js"></script>
+    <script src="./js/jquery-3.5.1.js"></script>
+    <script src="./js/index.js"></script>
+    <script src="./js/table.js"></script>
+</head>
+<body class="mdui-appbar-with-toolbar mdui-theme-primary-teal mdui-loaded mdui-drawer-body-left">
+<header class="mdui-appbar mdui-appbar-fixed">
+    <div class="mdui-toolbar mdui-color-theme">
+        <a id="toolbar-menu" mdui-drawer="{target: '#main-drawer', swipe: true}" class="mdui-btn mdui-btn-icon">
+            <i class="mdui-icon material-icons">menu</i>
+        </a>
+        <a href="index.html" id="toolbar-title" class="mdui-typo-headline mdui-hidden-xs">高校成绩管理系统</a>
+        <div class="mdui-toolbar-spacer"></div>
+    </div>
+</header>
+<div class="mdui-drawer" id="main-drawer">
+    <div class="mdui-list" id="draw-list" mdui-collapse="{accordion: true}">
+        <div class="mdui-collapse-item">
+            <a href="index.html">
+                <div class="mdui-collapse-item-header mdui-list-item mdui-ripple">
+                    <i class="mdui-list-item-icon mdui-icon material-icons mdui-text-color-blue">home</i>
+                    <div class="mdui-list-item-content">首页</div>
+                </div>
+            </a>
+        </div>
+
+        <div class="mdui-collapse-item">
+            <a href="student_score_year.html">
+                <div class="mdui-collapse-item-header mdui-list-item mdui-ripple">
+                    <i class="mdui-list-item-icon mdui-icon material-icons mdui-text-color-blue">person</i>
+                    <div class="mdui-list-item-content">学生学年成绩统计</div>
+                </div>
+            </a>
+        </div>
+
+        <div class="mdui-collapse-item">
+            <a href="student_gpa_rank.html">
+                <div class="mdui-collapse-item-header mdui-list-item mdui-ripple">
+                    <i class="mdui-list-item-icon mdui-icon material-icons mdui-text-color-amber">timelapse</i>
+                    <div class="mdui-list-item-content">学生GPA名次排定</div>
+                </div>
+            </a>
+        </div>
+
+        <div class="mdui-collapse-item">
+            <a href="course_avg_score.html">
+                <div class="mdui-collapse-item-header mdui-list-item mdui-ripple">
+                    <i class="mdui-list-item-icon mdui-icon material-icons mdui-text-color-orange">local_library</i>
+                    <div class="mdui-list-item-content">课程平均成绩统计</div>
+                </div>
+            </a>
+        </div>
+
+        <div class="mdui-collapse-item">
+            <a href="student_course_credit.html">
+                <div class="mdui-collapse-item-header mdui-list-item mdui-ripple">
+                    <i class="mdui-list-item-icon mdui-icon material-icons mdui-text-color-green">extension</i>
+                    <div class="mdui-list-item-content">学生课程学分查询</div>
+                </div>
+            </a>
+        </div>
+
+        <div class="mdui-collapse-item">
+            <a href="student_score_year.html">
+                <div class="mdui-collapse-item-header mdui-list-item mdui-ripple">
+                    <i class="mdui-list-item-icon mdui-icon material-icons mdui-text-color-teal">grade</i>
+                    <div class="mdui-list-item-content">学生课程成绩查询</div>
+                </div>
+            </a>
+        </div>
+
+        <div class="mdui-collapse-item">
+            <a href="teacher_course_open.html">
+                <div class="mdui-collapse-item-header mdui-list-item mdui-ripple">
+                    <i class="mdui-list-item-icon mdui-icon material-icons mdui-text-color-lime">highlight</i>
+                    <div class="mdui-list-item-content">教师任课情况查询</div>
+                </div>
+            </a>
+        </div>
+
+        <div class="mdui-collapse-item">
+            <a href="class_course_info.html">
+                <div class="mdui-collapse-item-header mdui-list-item mdui-ripple">
+                    <i class="mdui-list-item-icon mdui-icon material-icons mdui-text-color-green">center_focus_weak</i>
+                    <div class="mdui-list-item-content">班级开课情况查询</div>
+                </div>
+            </a>
+        </div>
+
+        <div class="mdui-collapse-item">
+            <a href="teacher_score_update.html">
+                <div class="mdui-collapse-item-header mdui-list-item mdui-ripple">
+                    <i class="mdui-list-item-icon mdui-icon material-icons mdui-text-color-cyan">edit</i>
+                    <div class="mdui-list-item-content">学生课程成绩录入</div>
+                </div>
+            </a>
+        </div>
+    </div>
+</div>
+<div class="mdui-container-fluid" id="content">
+
+</div>
+</body>
+</html>

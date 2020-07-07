@@ -2,6 +2,7 @@ package com.zjut.mis14
 
 import com.zjut.mis14.model.*
 import com.zjut.mis14.sql.SQL
+import freemarker.cache.ClassTemplateLoader
 import io.ktor.application.*
 import io.ktor.response.*
 import io.ktor.routing.*
@@ -14,6 +15,11 @@ import io.ktor.features.*
 import io.ktor.client.*
 import io.ktor.client.engine.apache.*
 import io.ktor.client.request.request
+import io.ktor.freemarker.FreeMarker
+import io.ktor.http.content.default
+import io.ktor.http.content.defaultResource
+import io.ktor.http.content.resources
+import io.ktor.http.content.static
 import model.Course
 import model.SrcPlace
 
@@ -27,10 +33,19 @@ fun Application.module(testing: Boolean = false) {
         }
     }
 
+    install(FreeMarker) {
+        templateLoader = ClassTemplateLoader(this::class.java.classLoader, "templates")
+    }
+
     val client = HttpClient(Apache) {
     }
 
     routing {
+
+        static {
+            defaultResource("index.html", "web")
+            resources("web")
+        }
 
         get("/major/all") {
             val result = SQL().queryList(Major::class.java)
@@ -133,6 +148,23 @@ fun Application.module(testing: Boolean = false) {
             call.respond(result)
         }
 
+        get("score/info/student/all") {
+            val params = call.request.queryParameters
+            val student = params["student_id"]
+            val result = SQL().queryList(ScoreInfo::class.java, "student_id" to student)
+            call.respond(result)
+        }
+
+        get("/semester/all") {
+            val result = SQL().queryList(Semester::class.java)
+            call.respond(result)
+        }
+
+        get("/year/all") {
+            val result = SQL().queryList(Semester::class.java).map { Year(it.semesterYear, it.semesterYear) }.toSet()
+            call.respond(result)
+        }
+
         post("/major/add") {
             val params = call.request.queryParameters
             val name = params["major_name"] ?: return@post
@@ -175,7 +207,7 @@ fun Application.module(testing: Boolean = false) {
             val course = params["course_id"] ?: return@post
             val teacher = params["teacher_id"] ?: return@post
             val clazz = params["class_id"]?.toIntOrNull() ?: return@post
-            val semester = params["semester_id"]?.toIntOrNull() ?: return@post
+            val semester = params["semester_year"]?.toIntOrNull() ?: return@post
 
             CourseOpen.insert(course, teacher, clazz, semester)
         }
