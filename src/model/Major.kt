@@ -16,7 +16,7 @@ data class Major(
         fun insert(majorName: String) {
             try{
                 DatabaseProvider.getConn()?.use {
-                    it.prepareStatement("insert into major (name) values (?)").use { ps ->
+                    it.prepareStatement("insert into wangcf_major14 (wcf_name14) values (?)").use { ps ->
                         ps.apply { setString(1, majorName) }
                         ps.execute()
                     }

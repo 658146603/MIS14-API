@@ -19,7 +19,7 @@ data class Clazz(
         fun insert(majorId: Int, clazzName: String, clazzYear: Int) {
             try{
                 DatabaseProvider.getConn()?.use {
-                    it.prepareStatement("insert into class (name, major, year) values (?, ?, ?)").use { ps->
+                    it.prepareStatement("insert into wangcf_class14 (wcf_name14, wcf_major14, wcf_year14) values (?, ?, ?)").use { ps->
                         ps.apply {
                             setInt(1, majorId)
                             setString(2, clazzName)

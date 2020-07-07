@@ -22,7 +22,7 @@ data class Score(
         fun insert(courseId: String, studentId: String, score: Int) {
             try {
                 DatabaseProvider.getConn()?.use {
-                    it.prepareStatement("insert into score (course, student, score) values (?, ?, ?)").use { ps ->
+                    it.prepareStatement("insert into wangcf_score14 (wcf_course14, wcf_student14, wcf_score14) values (?, ?, ?)").use { ps ->
                         ps.apply {
                             setString(1, courseId)
                             setString(2, studentId)

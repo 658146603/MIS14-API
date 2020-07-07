@@ -18,7 +18,7 @@ data class Teacher(
 
             try {
                 DatabaseProvider.getConn()?.use {
-                    it.prepareStatement("insert into teacher (id, name, sex, age, phone, title) values (?, ?, ?, ?, ? ,?)")
+                    it.prepareStatement("insert into wangcf_teacher14 (wcf_id14, wcf_name14, wcf_sex14, wcf_age14, wcf_phone14, wcf_title14) values (?, ?, ?, ?, ? ,?)")
                         .use { ps ->
                             ps.apply {
                                 setString(1, id)

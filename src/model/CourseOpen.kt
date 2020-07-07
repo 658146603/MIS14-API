@@ -27,7 +27,7 @@ data class CourseOpen(
         fun insert(courseId: String, teacherId: String, classId: Int, semesterId: Int) {
             try {
                 DatabaseProvider.getConn()?.use {
-                    it.prepareStatement("insert into course_open (course, teacher, class, semester) values (?, ?, ?, ?)")
+                    it.prepareStatement("insert into wangcf_course_open14 (wcf_course14, wcf_teacher14, wcf_class14, wcf_semester14) values (?, ?, ?, ?)")
                         .use { ps ->
                             ps.apply {
                                 setString(1, courseId)

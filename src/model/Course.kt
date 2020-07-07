@@ -19,7 +19,7 @@ data class Course(
         fun insert(id: String, name: String, credit: Float, hour: Int, type: Int) {
             try {
                 DatabaseProvider.getConn()?.use {
-                    it.prepareStatement("insert into course (id, name, credit, credit_hour, type) values (?, ?, ?, ?, ?)")
+                    it.prepareStatement("insert into wangcf_course14 (wcf_id14, wcf_name14, wcf_credit14, wcf_credit_hour14, wcf_type14) values (?, ?, ?, ?, ?)")
                         .use { ps ->
                             ps.apply {
                                 setString(1, id)
