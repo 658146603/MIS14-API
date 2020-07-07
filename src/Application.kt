@@ -76,7 +76,7 @@ fun Application.module(testing: Boolean = false) {
         }
 
         get("/teacher/all") {
-            val result = SQL().queryList(Student::class.java)
+            val result = SQL().queryList(Teacher::class.java)
             call.respond(result)
         }
 
@@ -148,7 +148,7 @@ fun Application.module(testing: Boolean = false) {
             call.respond(result)
         }
 
-        get("score/info/student/all") {
+        get("/score/info/student/all") {
             val params = call.request.queryParameters
             val student = params["student_id"]
             val result = SQL().queryList(ScoreInfo::class.java, "student_id" to student)

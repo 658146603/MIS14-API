@@ -1,15 +1,18 @@
 package com.zjut.mis14.model
 
 import com.zjut.mis14.conn.DatabaseProvider
+import com.zjut.mis14.sql.Field
+import com.zjut.mis14.sql.Model
 import java.sql.SQLException
 
+@Model("view_teacher")
 data class Teacher(
-    val teacherId: String,
-    val teacherName: String,
-    val teacherSex: String,
-    val teacherAge: Int,
-    val teacherPhone: String,
-    val teacherTitle: String
+    @Field("teacher_id") val teacherId: String,
+    @Field("teacher_name")val teacherName: String,
+    @Field("teacher_sex")val teacherSex: String,
+    @Field("teacher_age")val teacherAge: Int,
+    @Field("teacher_phone")val teacherPhone: String,
+    @Field("teacher_title")val teacherTitle: String
 ) {
     constructor() : this("", "", "", 0, "", "")
 

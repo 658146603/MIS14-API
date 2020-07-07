@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0,maximum-scale=1.0, user-scalable=no"/>
+    <meta name="theme-color" content="#3f51b5">
+    <title>高校成绩管理系统</title>
+    <link rel="stylesheet" type="text/css" href="./css/mdui.min.css">
+    <link rel="stylesheet" type="text/css" href="./css/style.css">
+    <script src="./js/mdui.min.js"></script>
+    <script src="./js/jquery-3.5.1.js"></script>
+    <script src="./js/index.js"></script>
+    <script src="./js/table.js"></script>
+</head>
+<script>
+
+    $ = jQuery
+    let table_course
+    let select_major
+    let select_class
+
+    window.onload = () => {
+        table_course = new Table('table_course', ['className', 'classYear', 'courseCredit', 'courseId', 'courseName', 'courseType', 'semesterYear', 'semesterNo', 'teacherId', 'teacherName', 'course_avg'])
+        select_major = new Selector('select_major', ["majorId", "majorName"])
+        select_class = new Selector('select_class', ["clazzId", "clazzName"])
+        select_major.init()
+        select_class.init()
+
+        get_major()
+    }
+
+    function get_major() {
+        select_major.selected = -1
+        $.ajax({
+            url: "major/all",
+            async: true,
+            cache: false,
+            type: 'get',
+            success: (data) => {
+                console.log(data)
+                select_major.update(data)
+                get_class()
+            }
+        })
+    }
+
+    function get_class() {
+        select_class.selected = -1
+        $.ajax({
+            url: 'class/major', data: {major_id: select_major.curr()},
+            async: true, cache: false, type: 'get',
+            success: (data) => {
+                console.log(data)
+                select_class.update(data)
+                get_course()
+            }
+        })
+    }
+
+    function get_course() {
+        $.ajax({
+            url: 'course/open/class', data: {class_id: select_class.curr()},
+            async: true, cache: false, type: 'get',
+            success: (data) => {
+                console.log(data)
+                table_course.removeAll()
+                table_course.addAll(data)
+            }
+        })
+    }
+
+</script>
+<body class="mdui-appbar-with-toolbar mdui-theme-primary-teal mdui-loaded mdui-drawer-body-left">
+<header class="mdui-appbar mdui-appbar-fixed">
+    <div class="mdui-toolbar mdui-color-theme">
+        <a id="toolbar-menu" mdui-drawer="{target: '#main-drawer', swipe: true}" class="mdui-btn mdui-btn-icon">
+            <i class="mdui-icon material-icons">menu</i>
+        </a>
+        <a href="index.html" id="toolbar-title" class="mdui-typo-headline mdui-hidden-xs">班级开课情况查询</a>
+        <div class="mdui-toolbar-spacer"></div>
+    </div>
+</header>
+<div class="mdui-drawer" id="main-drawer">
+    <div class="mdui-list" id="draw-list" mdui-collapse="{accordion: true}">
+        <div class="mdui-collapse-item">
+            <a href="index.html">
+                <div class="mdui-collapse-item-header mdui-list-item mdui-ripple">
+                    <i class="mdui-list-item-icon mdui-icon material-icons mdui-text-color-blue">home</i>
+                    <div class="mdui-list-item-content">首页</div>
+                </div>
+            </a>
+        </div>
+
+        <div class="mdui-collapse-item">
+            <a href="student_score_year.html">
+                <div class="mdui-collapse-item-header mdui-list-item mdui-ripple">
+                    <i class="mdui-list-item-icon mdui-icon material-icons mdui-text-color-blue">person</i>
+                    <div class="mdui-list-item-content">学生学年成绩统计</div>
+                </div>
+            </a>
+        </div>
+
+        <div class="mdui-collapse-item">
+            <a href="student_gpa_rank.html">
+                <div class="mdui-collapse-item-header mdui-list-item mdui-ripple">
+                    <i class="mdui-list-item-icon mdui-icon material-icons mdui-text-color-amber">timelapse</i>
+                    <div class="mdui-list-item-content">学生GPA名次排定</div>
+                </div>
+            </a>
+        </div>
+
+        <div class="mdui-collapse-item">
+            <a href="course_avg_score.html">
+                <div class="mdui-collapse-item-header mdui-list-item mdui-ripple">
+                    <i class="mdui-list-item-icon mdui-icon material-icons mdui-text-color-orange">local_library</i>
+                    <div class="mdui-list-item-content">课程平均成绩统计</div>
+                </div>
+            </a>
+        </div>
+
+        <div class="mdui-collapse-item">
+            <a href="student_course_credit.html">
+                <div class="mdui-collapse-item-header mdui-list-item mdui-ripple">
+                    <i class="mdui-list-item-icon mdui-icon material-icons mdui-text-color-green">extension</i>
+                    <div class="mdui-list-item-content">学生课程学分查询</div>
+                </div>
+            </a>
+        </div>
+
+        <div class="mdui-collapse-item">
+            <a href="student_score_year.html">
+                <div class="mdui-collapse-item-header mdui-list-item mdui-ripple">
+                    <i class="mdui-list-item-icon mdui-icon material-icons mdui-text-color-teal">grade</i>
+                    <div class="mdui-list-item-content">学生课程成绩查询</div>
+                </div>
+            </a>
+        </div>
+
+        <div class="mdui-collapse-item">
+            <a href="teacher_course_open.html">
+                <div class="mdui-collapse-item-header mdui-list-item mdui-ripple">
+                    <i class="mdui-list-item-icon mdui-icon material-icons mdui-text-color-lime">highlight</i>
+                    <div class="mdui-list-item-content">教师任课情况查询</div>
+                </div>
+            </a>
+        </div>
+
+        <div class="mdui-collapse-item">
+            <a href="class_course_info.html">
+                <div class="mdui-collapse-item-header mdui-list-item mdui-ripple">
+                    <i class="mdui-list-item-icon mdui-icon material-icons mdui-text-color-green">center_focus_weak</i>
+                    <div class="mdui-list-item-content">班级开课情况查询</div>
+                </div>
+            </a>
+        </div>
+
+        <div class="mdui-collapse-item">
+            <a href="teacher_score_update.html">
+                <div class="mdui-collapse-item-header mdui-list-item mdui-ripple">
+                    <i class="mdui-list-item-icon mdui-icon material-icons mdui-text-color-cyan">edit</i>
+                    <div class="mdui-list-item-content">学生课程成绩录入</div>
+                </div>
+            </a>
+        </div>
+    </div>
+</div>
+<div class="mdui-container-fluid" id="content">
+
+    <label for="select_major">专业</label>
+    <select id="select_major" class="mdui-select" onchange="get_class()"
+            mdui-select="{position: 'bottom'}"></select>
+
+    <label for="select_class">班级</label>
+    <select id="select_class" class="mdui-select" onchange="get_course()"
+            mdui-select="{position: 'bottom'}"></select>
+
+    <div class="mdui-table-fluid">
+        <table id="table_course" class="mdui-table mdui-table-hoverable">
+            <tr>
+                <th>班级名称</th>
+                <th>班级年份</th>
+                <th>学分</th>
+                <th>课程号</th>
+                <th>课程名</th>
+                <th>考查类型</th>
+                <th>学期年份</th>
+                <th>学期号</th>
+                <th>教师工号</th>
+                <th>教师姓名</th>
+                <th>平均分</th>
+            </tr>
+        </table>
+    </div>
+</div>
+</body>
+</html>
