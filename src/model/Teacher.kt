@@ -22,10 +22,11 @@ data class Teacher(
                         .use { ps ->
                             ps.apply {
                                 setString(1, id)
-                                setInt(2, sex)
-                                setInt(3, age)
-                                setString(4, phone)
-                                setInt(5, title)
+                                setString(2, name)
+                                setInt(3, sex)
+                                setInt(4, age)
+                                setString(5, phone)
+                                setInt(6, title)
                                 execute()
                             }
                         }

@@ -15,6 +15,7 @@ import io.ktor.client.*
 import io.ktor.client.engine.apache.*
 import io.ktor.client.request.request
 import model.Course
+import model.SrcPlace
 
 fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
 
@@ -44,7 +45,8 @@ fun Application.module(testing: Boolean = false) {
         }
 
         get("/src/place/all") {
-
+            val result = SQL().queryList(SrcPlace::class.java)
+            call.respond(result)
         }
 
         get("/student/class") {
@@ -119,6 +121,15 @@ fun Application.module(testing: Boolean = false) {
             val clazzId = params["class_id"]
             val courseId = params["course_id"]
             val result = SQL().queryList(Score::class.java, "class_id" to clazzId, "course_id" to courseId)
+            call.respond(result)
+        }
+
+        get("/score/info") {
+            val params = call.request.queryParameters
+            val course = params["course_id"]
+            val student = params["student_id"]
+            val result =
+                SQL().query(ScoreInfo::class.java, "course_id" to course, "student_id" to student) ?: return@get
             call.respond(result)
         }
 

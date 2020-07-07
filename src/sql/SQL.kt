@@ -22,9 +22,9 @@ class SQL {
         var instance: T? = null
         try {
             val ps = if (col != null && value != null) {
-                conn.prepareStatement("select * from $model where $col = ? limit 1").apply { setObject(1, value) }
+                conn.prepareStatement("select * from $model where $col = ?").apply { setObject(1, value) }
             } else {
-                conn.prepareStatement("select * from $model limit 1")
+                conn.prepareStatement("select * from $model")
             }
             val rs = ps.executeQuery()
             if (rs.next()) instance = instance(clazz, fields, rs)
@@ -54,7 +54,7 @@ class SQL {
 
         var instance: T? = null
         try {
-            val ps = conn.prepareStatement("select * from $model where $col0=? and $col1=? limit 1")
+            val ps = conn.prepareStatement("select * from $model where $col0=? and $col1=?")
             ps.setObject(1, val0)
             ps.setObject(2, val1)
             val rs = ps.executeQuery()

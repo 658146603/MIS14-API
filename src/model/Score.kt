@@ -3,9 +3,7 @@ package com.zjut.mis14.model
 import com.zjut.mis14.conn.DatabaseProvider
 import com.zjut.mis14.sql.Field
 import com.zjut.mis14.sql.Model
-import com.zjut.mis14.sql.SQL
 import java.sql.SQLException
-import kotlin.math.exp
 
 @Model("view_score")
 data class Score(
@@ -38,12 +36,35 @@ data class Score(
             }
         }
 
-        fun selectByYear(studentId: String?, year: Int?): HashSet<Score> {
-            val courseOpenInYear = SQL().queryList(CourseOpen::class.java, "semester_year" to year)
-            val scores = HashSet<Score>()
-            courseOpenInYear.forEach {
-                scores.addAll(SQL().queryList(Score::class.java, "student_id" to studentId, "course_id" to it.courseId))
+        fun selectByYear(studentId: String?, year: Int?): ArrayList<Score> {
+            if (studentId == null || year == null) {
+                return arrayListOf()
             }
+            val scores = ArrayList<Score>()
+            DatabaseProvider.getConn()?.use {
+                it.prepareStatement("select distinct view_score.course_id, student_id, student_name, view_score.class_id, view_score.course_id, view_score.course_name, view_score.course_credit, view_score.course_type, course_score from view_course_open , view_score where view_score.course_id = view_course_open.course_id and student_id = ? and semester_year = ?")
+                    .use { ps ->
+                        ps.apply {
+                            setString(1, studentId)
+                            setInt(2, year)
+                        }.executeQuery().use { rs ->
+                            while (rs.next()) {
+                                val score = Score(
+                                    rs.getString("student_id"),
+                                    rs.getString("student_name"),
+                                    rs.getInt("class_id"),
+                                    rs.getString("course_id"),
+                                    rs.getString("course_name"),
+                                    rs.getString("course_type"),
+                                    rs.getFloat("course_credit"),
+                                    rs.getInt("course_score")
+                                )
+                                scores.add(score)
+                            }
+                        }
+                    }
+            }
+
             return scores
         }
     }
