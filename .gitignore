@@ -1,2 +1,3 @@
 Java.gitignore
 src/conn/Config.kt
+build/
