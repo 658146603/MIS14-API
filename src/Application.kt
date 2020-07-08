@@ -7,19 +7,17 @@ import io.ktor.application.*
 import io.ktor.response.*
 import io.ktor.routing.*
 import io.ktor.http.*
-import io.ktor.html.*
 import kotlinx.html.*
 import kotlinx.css.*
 import io.ktor.gson.*
 import io.ktor.features.*
 import io.ktor.client.*
 import io.ktor.client.engine.apache.*
-import io.ktor.client.request.request
 import io.ktor.freemarker.FreeMarker
-import io.ktor.http.content.default
 import io.ktor.http.content.defaultResource
 import io.ktor.http.content.resources
 import io.ktor.http.content.static
+import io.ktor.request.receiveParameters
 import model.Course
 import model.SrcPlace
 
@@ -67,7 +65,7 @@ fun Application.module(testing: Boolean = false) {
         get("/student/class") {
             val clazz = call.request.queryParameters["class_id"]
             val result = SQL().queryList(Student::class.java, "class_id" to clazz)
-            call.respond(result)
+            call.respond(result.apply { sortByDescending { it.studentGpa } })
         }
 
         get("/student/all") {
@@ -155,6 +153,14 @@ fun Application.module(testing: Boolean = false) {
             call.respond(result)
         }
 
+        get("/score/class/course/open") {
+            val params = call.request.queryParameters
+            val clazz = params["class_id"]
+            val course = params["course_id"]
+            val result = SQL().queryList(ScoreInfo::class.java, "class_id" to clazz, "course_id" to course)
+            call.respond(result)
+        }
+
         get("/semester/all") {
             val result = SQL().queryList(Semester::class.java)
             call.respond(result)
@@ -166,13 +172,13 @@ fun Application.module(testing: Boolean = false) {
         }
 
         post("/major/add") {
-            val params = call.request.queryParameters
+            val params = call.receiveParameters()
             val name = params["major_name"] ?: return@post
             Major.insert(name)
         }
 
         post("/class/add") {
-            val params = call.request.queryParameters
+            val params = call.receiveParameters()
             val name = params["class_name"] ?: return@post
             val major = params["major_id"]?.toIntOrNull() ?: return@post
             val year = params["class_tear"]?.toIntOrNull() ?: return@post
@@ -180,7 +186,7 @@ fun Application.module(testing: Boolean = false) {
         }
 
         post("/teacher/add") {
-            val params = call.request.queryParameters
+            val params = call.receiveParameters()
             val id = params["teacher_id"] ?: return@post
             val name = params["teacher_name"] ?: return@post
             val sex = params["teacher_sex"]?.toIntOrNull() ?: return@post
@@ -192,7 +198,7 @@ fun Application.module(testing: Boolean = false) {
         }
 
         post("/student/add") {
-            val params = call.request.queryParameters
+            val params = call.receiveParameters()
             val id = params["student_id"] ?: return@post
             val name = params["student_name"] ?: return@post
             val sex = params["student_sex"]?.toIntOrNull() ?: return@post
@@ -203,7 +209,7 @@ fun Application.module(testing: Boolean = false) {
         }
 
         post("/course/open/add") {
-            val params = call.request.queryParameters
+            val params = call.receiveParameters()
             val course = params["course_id"] ?: return@post
             val teacher = params["teacher_id"] ?: return@post
             val clazz = params["class_id"]?.toIntOrNull() ?: return@post
@@ -213,15 +219,16 @@ fun Application.module(testing: Boolean = false) {
         }
 
         post("/score/add") {
-            val params = call.request.queryParameters
+            val params = call.receiveParameters()
             val course = params["course_id"] ?: return@post
             val student = params["student_id"] ?: return@post
             val score = params["score"]?.toIntOrNull() ?: return@post
             Score.insert(course, student, score)
+            call.respond("status" to 200)
         }
 
         post("/course/add") {
-            val params = call.request.queryParameters
+            val params = call.receiveParameters()
             val id = params["course_id"] ?: return@post
             val name = params["course_name"] ?: return@post
             val credit = params["credit"]?.toFloatOrNull() ?: return@post

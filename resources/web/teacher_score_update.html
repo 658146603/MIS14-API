@@ -19,6 +19,54 @@
     let select_teacher
     let select_course
 
+    class Table1 {
+        constructor(id, col) {
+            this.id = id
+            this.col = col
+        }
+
+        removeAll() {
+            $('#' + this.id + ' tr:not(:first)').remove();
+            mdui.updateTables()
+        }
+
+        addAll(items) {
+            items.forEach((item) => {
+                let tr = document.createElement('tr')
+                this.col.forEach(key => {
+                    let value = item[key]
+                    let td = document.createElement('td')
+                    td.innerHTML = value
+                    tr.appendChild(td)
+                })
+                let td = document.createElement('td')
+                td.innerHTML = `<button class="mdui-btn mdui-btn-raised" onclick="edit_score('${item['courseId']}', '${item['studentId']}')">EDIT</button>`
+                tr.appendChild(td)
+                $('#' + this.id).append(tr)
+            })
+
+            mdui.updateTables()
+        }
+    }
+
+    function edit_score(course, student) {
+        mdui.prompt(`输入${student}的${course}成绩`, function (value) {
+            console.log(course, student, value)
+            $.ajax({
+                url: 'score/add',
+                data: {
+                    course_id: course,
+                    student_id: student,
+                    score: value
+                },
+                async: true,
+                cache: false,
+                method: 'post'
+            })
+        }, function (value) {
+        })
+    }
+
     class Selector1 {
         constructor(id, col) {
             this.id = id
@@ -35,7 +83,7 @@
         init() {
             $('#' + this.id).append('<option selected="selected" value="-1">请选择</option>')
             this.data.forEach((item) => {
-                $('#' + this.id).append('<option value="' + item[this.col[0]] + '">' + item[this.col[1]] + '-' + item[this.col[2]] + '</option>')
+                $('#' + this.id).append('<option value="' + item[this.col[0]] + '-' + item[this.col[1]] + '">' + item[this.col[2]] + '-' + item[this.col[3]] + '</option>')
             })
             this.inst.handleUpdate()
         }
@@ -54,9 +102,9 @@
     }
 
     window.onload = () => {
-        table_student_list = new Table('table_student_list', ['className', 'classYear', 'courseCredit', 'courseId', 'courseName', 'courseType', 'semesterYear', 'semesterNo', 'teacherId', 'teacherName', 'course_avg'])
+        table_student_list = new Table1('table_student_list', ['courseId', 'courseName', 'courseCredit', 'semesterYear', 'semesterNo', 'teacherId', 'teacherName', 'className', 'studentId', 'studentName'])
         select_teacher = new Selector('select_teacher', ['teacherId', 'teacherName'])
-        select_course = new Selector1('select_course', ['courseId', 'className', 'courseName'])
+        select_course = new Selector1('select_course', ['courseId', 'classId', 'className', 'courseName'])
         select_teacher.init()
         get_teacher()
     }
@@ -89,11 +137,18 @@
 
     function get_student_list() {
         $.ajax({
-            url: 'course/open/teacher', data: {teacher_id: select_teacher.curr()},
-            async: true, cache: false, type: 'get',
+            url: 'score/class/course/open',
+            data: {
+                course_id: select_course.curr().split('-')[0],
+                class_id: select_course.curr().split('-')[1]
+            },
+            async: true,
+            cache: false,
+            type: 'get',
             success: (data) => {
                 console.log(data)
-                select_course.update(data)
+                table_student_list.removeAll()
+                table_student_list.addAll(data)
             }
         })
     }
@@ -206,17 +261,17 @@
     <div class="mdui-table-fluid">
         <table id="table_student_list" class="mdui-table mdui-table-hoverable">
             <tr>
-                <th>班级名称</th>
-                <th>班级年份</th>
-                <th>学分</th>
                 <th>课程号</th>
-                <th>课程名</th>
-                <th>考查类型</th>
-                <th>学期年份</th>
-                <th>学期号</th>
+                <th>课程名称</th>
+                <th>课程学分</th>
+                <th>学年</th>
+                <th>学期</th>
                 <th>教师工号</th>
                 <th>教师姓名</th>
-                <th>平均分</th>
+                <th>班级名称</th>
+                <th>学号</th>
+                <th>学生姓名</th>
+                <th>成绩</th>
             </tr>
         </table>
     </div>

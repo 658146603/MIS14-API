@@ -22,14 +22,20 @@ data class Score(
         fun insert(courseId: String, studentId: String, score: Int) {
             try {
                 DatabaseProvider.getConn()?.use {
-                    it.prepareStatement("insert into wangcf_score14 (wcf_course14, wcf_student14, wcf_score14) values (?, ?, ?)").use { ps ->
-                        ps.apply {
-                            setString(1, courseId)
-                            setString(2, studentId)
-                            setInt(3, score)
-                            execute()
+                    it.prepareStatement("if not exists(select * from wangcf_score14 where wcf_course14 = ? and wcf_student14 = ?) insert into wangcf_score14 (wcf_course14, wcf_student14, wcf_score14) values (?, ?, ?) else update wangcf_score14 set wcf_score14=? where wcf_course14 = ? and wcf_student14 = ?")
+                        .use { ps ->
+                            ps.apply {
+                                setString(1, courseId)
+                                setString(2, studentId)
+                                setString(3, courseId)
+                                setString(4, studentId)
+                                setInt(5, score)
+                                setInt(6, score)
+                                setString(7, courseId)
+                                setString(8, studentId)
+                                execute()
+                            }
                         }
-                    }
                 }
             } catch (e: SQLException) {
                 e.printStackTrace()
