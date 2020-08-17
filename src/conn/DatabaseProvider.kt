@@ -1,5 +1,6 @@
 package com.zjut.mis14.conn
 
+import zom.zjut.mis14.conn.password
 import java.sql.Connection
 import java.sql.DriverManager
 import java.sql.SQLException
